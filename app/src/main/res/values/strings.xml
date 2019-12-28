@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CinemaApp</string>
+    <string name="title_home">Home</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_actual">Actual in Cinema</string>
+</resources>
