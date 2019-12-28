@@ -89,6 +89,7 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
             movieTitle = itemView.findViewById(R.id.topMovieTitle);
             movieDescription = itemView.findViewById(R.id.topMovieDescription);
 
+
         }
     }
 }
