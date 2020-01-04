@@ -23,11 +23,6 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     private OnBottomReachedListener onBottomReachedListener;
     private FragmentManager fragmentManager;
 
-//    public TopMoviesAdapter(Context context) {
-//        this.context = context;
-//        this.movies = new ArrayList<>();
-//
-//    }
 
     public TopMoviesAdapter(Context context, List<MovieResult> movies, FragmentManager fragmentManager) {
         this.context = context;
@@ -38,10 +33,8 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     @NonNull
     @Override
     public TopMovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.top_movie_list_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.top_movie_list_item, parent, false);
         TopMovieViewHolder viewHolder = new TopMovieViewHolder(view);
-
-
         return viewHolder;
     }
 
@@ -64,6 +57,16 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
 
         holder.movieDescription.setText(movie.getOverview());
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DetailDialogFragment detail = new DetailDialogFragment(movie, context);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                detail.show(transaction, "detail");
+
+
+            }
+        });
 
 
     }

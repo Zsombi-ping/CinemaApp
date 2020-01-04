@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -28,9 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_PASSWORD + " TEXT, "
                     + COLUMN_BIRTH_DATE + " TEXT "
                     + ")";
+    public Context context;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -67,21 +71,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else return true;
     }
 
-
     //Get user datas by email
 
     public ArrayList<String> getDatas(String email) {
+
         ArrayList<String> datas = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("SELECT* FROM " + TABLE_NAME + " WHERE " + COLUMN_EMAIL + "=?", new String[]{email});
         if (result.moveToFirst()) {
             datas.add(result.getString(result.getColumnIndex(COLUMN_FIRST_NAME)));
             datas.add(result.getString(result.getColumnIndex(COLUMN_LAST_NAME)));
             datas.add(result.getString(result.getColumnIndex(COLUMN_EMAIL)));
             datas.add(result.getString(result.getColumnIndex(COLUMN_BIRTH_DATE)));
+            datas.add(result.getString(result.getColumnIndex(COLUMN_PASSWORD)));
             return datas;
         }
         return null;
+    }
+
+
+    // Changing password
+    public boolean changePass(String email, String oldpass, String newpass) {
+
+
+        ArrayList<String> datas = new ArrayList<>();
+        datas = this.getDatas(email);
+
+        if (TextUtils.equals(oldpass, datas.get(4))) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "update " + TABLE_NAME + " set " + COLUMN_PASSWORD + " =?" + " where " + COLUMN_EMAIL + " =?";
+            String[] selections = {newpass, email};
+            Cursor cursor = db.rawQuery(query, selections);
+            if (cursor.moveToFirst())
+                Log.d("ERTEK", cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD)));
+            datas = this.getDatas(email);
+            if (TextUtils.equals(datas.get(4), oldpass))
+                return false;
+            return true;
+        }
+        return false;
     }
 
     //checking the email and the password(Login Fragment)

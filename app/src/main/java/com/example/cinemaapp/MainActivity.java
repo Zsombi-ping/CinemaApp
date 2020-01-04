@@ -1,20 +1,13 @@
 package com.example.cinemaapp;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import java.util.HashMap;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(navListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -37,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new HomeFragment();
                     break;
                 case R.id.navigation_profile:
-                    selectedFragment = new ProfileFragment();
+                    selectedFragment = new ProfileFragment(getApplicationContext());
                     break;
                 case R.id.navigation_favorite:
                     selectedFragment = new FavoriteFragment();
@@ -47,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment,selectedFragment).commit();
-          return true;
+            getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, selectedFragment).commit();
+            return true;
         }
     };
+
 }

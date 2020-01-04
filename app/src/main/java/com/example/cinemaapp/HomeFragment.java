@@ -9,20 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
-
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -114,7 +110,6 @@ public class HomeFragment extends Fragment {
                     adapter.setOnBottomReachedListener(position -> loadMoreData(++PAGE));
                     recyclerView.setAdapter(adapter);
                     recyclerView.getAdapter().notifyDataSetChanged();
-
                 } catch (Exception e) {
 //                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
 
@@ -132,7 +127,7 @@ public class HomeFragment extends Fragment {
 
     private void search(String searchString) {
 
-        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString,1);
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, 1);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {

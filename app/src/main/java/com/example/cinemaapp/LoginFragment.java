@@ -11,39 +11,37 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LoginFragment extends AppCompatActivity{
+public class LoginFragment extends AppCompatActivity {
 
-    private EditText emailET,passwordET;
+    private EditText emailET, passwordET;
     DatabaseHelper db;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        emailET=findViewById(R.id.email);
-        passwordET=findViewById(R.id.password);
+        emailET = findViewById(R.id.email);
+        passwordET = findViewById(R.id.password);
     }
 
-    public void goToRegister(View view)
-    {
-        Intent intent=new Intent(LoginFragment.this, RegisterActivity.class);
+    public void goToRegister(View view) {
+        Intent intent = new Intent(LoginFragment.this, RegisterActivity.class);
         startActivity(intent);
     }
 
     // If data introduced is correct and it's available , user can view the application
 
-    public void goToHomePage(View view)
-    {
-        db=new DatabaseHelper(this);
+    public void goToHomePage(View view) {
+        db = new DatabaseHelper(this);
         String email = emailET.getText().toString();
         String password = passwordET.getText().toString();
         Boolean CheckEmailPassword = db.checkLogin(email, password);
         if (checkDataEntered() == true) {
             if (CheckEmailPassword == true) {
 
-                SharedPreferences preferences=getSharedPreferences("CONTAINER",MODE_PRIVATE);
-                SharedPreferences.Editor editor=preferences.edit();
-                editor.putString("EMAIL",email);
+                SharedPreferences preferences = getSharedPreferences("CONTAINER", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("EMAIL", email);
                 editor.commit();
 
                 Intent intent = new Intent(LoginFragment.this, MainActivity.class);
@@ -66,17 +64,16 @@ public class LoginFragment extends AppCompatActivity{
 
     // Validating data
 
-    public boolean checkDataEntered()
-    {
-        boolean dataValidation=true;
+    public boolean checkDataEntered() {
+        boolean dataValidation = true;
         if (isEmpty(emailET)) {
             emailET.setError("Email is required!");
-            dataValidation=false;
+            dataValidation = false;
         }
 
         if (isEmpty(passwordET)) {
             passwordET.setError("Password is required!");
-            dataValidation=false;
+            dataValidation = false;
         }
         return dataValidation;
     }
