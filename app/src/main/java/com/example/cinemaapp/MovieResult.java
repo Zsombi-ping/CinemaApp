@@ -122,7 +122,6 @@ public class MovieResult {
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
-
     public List<Integer> getGenreIds() {
         return genreIds;
     }
@@ -164,7 +163,8 @@ public class MovieResult {
     }
 
     public String getImage() {
-        return "http://image.tmdb.org/t/p/w500" + posterPath;
+        String pth =  "http://image.tmdb.org/t/p/w500" + posterPath;
+        return pth;
     }
 
 }

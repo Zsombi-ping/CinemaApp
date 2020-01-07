@@ -13,11 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -27,6 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class DetailDialogFragment extends DialogFragment {
 
@@ -40,11 +45,13 @@ public class DetailDialogFragment extends DialogFragment {
     private TextView description;
     private ImageView close;
     private ImageView favoriteMovie;
+    private Boolean isFavorite = false;
+
+    DatabaseHelper db = new DatabaseHelper(getContext());
 
 
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
-    private Boolean isFavorite = false;
 
 
     private VideoResult videoResult;
@@ -85,6 +92,22 @@ public class DetailDialogFragment extends DialogFragment {
         description.setText(movie.getOverview());
 
         favoriteMovie.setImageResource(R.drawable.ic_heart_full);
+
+        favoriteMovie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFavorite) {
+                    favoriteMovie.setImageResource(R.drawable.ic_heart_border);
+                    isFavorite = false;
+                } else {
+                    SharedPreferences preferences = getContext().getSharedPreferences("CONTAINER", MODE_PRIVATE);
+                    String Activ_email = preferences.getString("EMAIL", "email");
+                    db.saveMovie(Activ_email,movie.getTitle() , movie.getOverview());
+                    favoriteMovie.setImageResource(R.drawable.ic_heart_full);
+                    isFavorite = true;
+                }
+            }
+        });
 
 
         youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {

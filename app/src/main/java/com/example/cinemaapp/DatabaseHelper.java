@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.http.SslCertificate;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,6 +31,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + COLUMN_PASSWORD + " TEXT, "
                     + COLUMN_BIRTH_DATE + " TEXT "
                     + ")";
+
+    private static final String TABLE_FAVOURITES = "Favourites";
+    private static final String FAVOURITES_TITLE = "title";
+    private static final String FAVOURITES_DESCRIPT = "descript";
+    private static final String FAVOURITES_EMAIL= "email";
+
+    public static final String CREATE_FAVTABLE =
+            "CREATE TABLE " + TABLE_FAVOURITES + "("
+                    + FAVOURITES_TITLE + " TEXT, "
+                    + FAVOURITES_DESCRIPT + " TEXT, "
+                    + FAVOURITES_EMAIL + "TEXT"
+                    + ")";
+
+
+
     public Context context;
 
     public DatabaseHelper(@Nullable Context context) {
@@ -40,6 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_FAVTABLE);
     }
 
     @Override
@@ -122,6 +139,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.getCount() > 0)
             return true;
         else return false;
+    }
+
+    public boolean saveMovie(String email, String title , String description) {
+
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("title", title);
+            values.put("descript", description);
+            values.put("email", email);
+            long ins = db.insert(TABLE_FAVOURITES, null, values);
+            return true;
+    }
+
+
+   public ArrayList<FavMovie> getFavoite (String email) {
+       SQLiteDatabase db = this.getWritableDatabase();
+       ArrayList<FavMovie> favourites = new ArrayList<>();
+
+       Cursor cursor = db.rawQuery("SELECT 1,2 FROM " + TABLE_FAVOURITES + " WHERE " + FAVOURITES_EMAIL + "=?", new String[]{email});
+
+
+       while (cursor.moveToNext()) {
+           FavMovie fav = new FavMovie();
+           fav.setTitle(cursor.getString(0));
+           fav.setDescript(cursor.getString(1));
+           favourites.add(fav);
+       }
+     return favourites;
     }
 
 }

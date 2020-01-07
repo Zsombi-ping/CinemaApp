@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class HomeFragment extends Fragment {
 
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public int PAGE = 1;
+    public int SEARCH_PAGE = 1;
     public static String API_KEY = "55d2a7718c60c04a3dcdb349b63c06e6";
     public static String LANGUAGE = "en-US";
     public static String CATEGORY = "popular";
@@ -46,7 +49,8 @@ public class HomeFragment extends Fragment {
         this.context = context;
     }
 
-    public HomeFragment() {
+    public HomeFragment()
+    {
 
     }
 
@@ -63,7 +67,7 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                queryString = query;
+//                queryString = query;
                 return false;
             }
 
@@ -74,6 +78,7 @@ public class HomeFragment extends Fragment {
                 if (newText.isEmpty()) {
                     initMovieList();
                 } else {
+
                     search(newText);
                 }
 
@@ -82,7 +87,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-        if (movies.isEmpty() && queryString.isEmpty()) {
+        if (queryString.isEmpty()) {
             initMovieList();
         }
 
@@ -92,7 +97,7 @@ public class HomeFragment extends Fragment {
 
     private void initMovieList() {
 
-
+        SEARCH_PAGE = 1;
         Call<MovieResponse> call = apiInterface().getPopularMovies(API_KEY, PAGE);
 
 
@@ -110,6 +115,7 @@ public class HomeFragment extends Fragment {
                     adapter.setOnBottomReachedListener(position -> loadMoreData(++PAGE));
                     recyclerView.setAdapter(adapter);
                     recyclerView.getAdapter().notifyDataSetChanged();
+
                 } catch (Exception e) {
 //                    Toast.makeText(getContext(), "Something went wrong:" + e.toString(), Toast.LENGTH_LONG).show();
 
@@ -126,8 +132,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void search(String searchString) {
+        PAGE = 1;
 
-        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, 1);
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, SEARCH_PAGE);
+
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -135,6 +143,10 @@ public class HomeFragment extends Fragment {
                     List<MovieResult> movieList = response.body().getMovieResults();
                     movies = new ArrayList<>();
                     movies.addAll(movieList);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    adapter = new TopMoviesAdapter(context, movies, getFragmentManager());
+                    adapter.setOnBottomReachedListener(position -> loadMoreSearch(searchString, ++SEARCH_PAGE));
+                    recyclerView.setAdapter(adapter);
 
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -150,10 +162,32 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void loadMoreSearch(String searchString, int pageNumber) {
+        Call<MovieResponse> call = apiInterface().getSearch(API_KEY, searchString, pageNumber);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieResult> movieList = response.body().getMovieResults();
+                movies.addAll(movieList);
+
+                recyclerView.getAdapter().notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
 
     private void loadMoreData(int pageNumber) {
 
         Call<MovieResponse> call = apiInterface().getPopularMovies(API_KEY, pageNumber);
+
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {

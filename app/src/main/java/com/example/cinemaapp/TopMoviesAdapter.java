@@ -12,7 +12,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+
 import com.bumptech.glide.Glide;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
     private List<MovieResult> movies;
     private OnBottomReachedListener onBottomReachedListener;
     private FragmentManager fragmentManager;
-
+    private ImageLoader img;
 
     public TopMoviesAdapter(Context context, List<MovieResult> movies, FragmentManager fragmentManager) {
         this.context = context;
@@ -49,12 +52,12 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
 
         MovieResult movie = movies.get(position);
 
+
         Glide.with(holder.imageView)
                 .load(movie.getImage())
                 .into(holder.imageView);
 
         holder.movieTitle.setText(movie.getTitle());
-
         holder.movieDescription.setText(movie.getOverview());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +66,6 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
                 DetailDialogFragment detail = new DetailDialogFragment(movie, context);
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 detail.show(transaction, "detail");
-
 
             }
         });

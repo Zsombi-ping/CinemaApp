@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(navListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, new HomeFragment(getApplicationContext())).commit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (menuItem.getItemId()) {
                 case R.id.navigation_home:
-                    selectedFragment = new HomeFragment();
+                    selectedFragment = new HomeFragment(getApplicationContext());
                     break;
                 case R.id.navigation_profile:
                     selectedFragment = new ProfileFragment(getApplicationContext());

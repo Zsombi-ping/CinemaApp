@@ -44,6 +44,7 @@ public class LoginFragment extends AppCompatActivity {
                 editor.putString("EMAIL", email);
                 editor.commit();
 
+
                 Intent intent = new Intent(LoginFragment.this, MainActivity.class);
                 startActivity(intent);
                 //Toast.makeText(getContext(),"Successfully login",Toast.LENGTH_SHORT).show();
