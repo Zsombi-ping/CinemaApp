@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -53,9 +54,23 @@ public class TopMoviesAdapter extends RecyclerView.Adapter<TopMoviesAdapter.TopM
         MovieResult movie = movies.get(position);
 
 
-        Glide.with(holder.imageView)
-                .load(movie.getImage())
-                .into(holder.imageView);
+
+        try {
+            String url = movie.getImage(); /* URL of Image */;
+
+            if (url.startsWith("http://"))
+                url = url.replace("http://", "https://");
+
+            RequestOptions requestOptions = new RequestOptions();
+            Glide
+                    .with(context)
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(url)
+                    .into(holder.imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         holder.movieTitle.setText(movie.getTitle());
         holder.movieDescription.setText(movie.getOverview());
